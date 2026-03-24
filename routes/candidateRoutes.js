@@ -119,4 +119,24 @@ router.post("/vote/:candidateId", async (req,res)=>{
     }
 });
 
+// votecount route
+router.get("/vote/count",async (res)=>{
+    try {
+        const candidate = await Candidate.find().sort({voteCount: "desc"});
+
+        const voteRecord = candidate.map((data)=>{
+            return {
+                party: data.party,
+                count: data.voteCount
+            }
+        });
+
+        return res.status(200).json(voteRecord);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({error: "internal server error"});      
+    }
+});
+
 module.exports = router;
