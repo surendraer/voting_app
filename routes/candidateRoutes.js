@@ -77,4 +77,46 @@ router.delete("/:candidateId", async (req,res)=>{
         res.status(500).json({error: "internal server error"});
     }
 })
+
+
+// voting route
+router.post("/vote/:candidateId", async (req,res)=>{
+    const candidateId = req.params.candidateId;
+    const userId = req.user.id;
+
+    try {
+        if( await checkAdminRole(req.user.id)){
+            return res.status(403).json({message: "admin not allowed to vote"});
+        }
+        const candidate = await Candidate.findById(candidateId);
+        if(!candidate){
+            return res.status(404).json({message: "candidate not found"});
+        }
+
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({message: "user not found"});
+        }
+
+        if(user.isVoted){
+            return res.status(400).json({message: "user has already voted"});
+        }
+
+        candidate.votes.push(userId);
+        candidate.voteCount++;
+        await candidate.save();
+
+        user.isVoted = true;
+        await user.save();
+
+
+        res.status(200).json({message: "voted succesfully"});
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({error: "internal server error"});
+    }
+});
+
 module.exports = router;
