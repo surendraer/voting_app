@@ -11,10 +11,10 @@ const userRoutes = require("./routes/userRoutes");
 
 app.use("/user",userRoutes);
 
-const {jwtAuthMiddleware} = require("./jwt");
+
 
 const candidateRoutes = require("./routes/candidateRoutes");
-app.use("/candidates",jwtAuthMiddleware,candidateRoutes);
+app.use("/candidates",candidateRoutes);
 
 app.listen(PORT,()=>{
     console.log("listening on port "+ PORT);

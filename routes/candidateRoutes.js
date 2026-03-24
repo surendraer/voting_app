@@ -14,7 +14,7 @@ const checkAdminRole = async (userId)=>{
     }
 }
 // add candidate route
-router.post("/",async (req,res)=>{
+router.post("/",jwtAuthMiddleware, async (req,res)=>{
     try {
 
         if(! await checkAdminRole(req.user.id)){
@@ -31,7 +31,7 @@ router.post("/",async (req,res)=>{
 });
 
 // update candidate route
-router.put("/:candidateId", async (req,res)=>{
+router.put("/:candidateId", jwtAuthMiddleware, async (req,res)=>{
     try {
         if(! await checkAdminRole(req.user.id)){
             return res.status(403).json({message: "not authorized"});
@@ -57,7 +57,7 @@ router.put("/:candidateId", async (req,res)=>{
 });
 
 //delete candidate
-router.delete("/:candidateId", async (req,res)=>{
+router.delete("/:candidateId",jwtAuthMiddleware,  async (req,res)=>{
     try {
         if(! await checkAdminRole(req.user.id)){
             return res.status(403).json({message: "not authorized"});
@@ -80,7 +80,7 @@ router.delete("/:candidateId", async (req,res)=>{
 
 
 // voting route
-router.post("/vote/:candidateId", async (req,res)=>{
+router.post("/vote/:candidateId", jwtAuthMiddleware, async (req,res)=>{
     const candidateId = req.params.candidateId;
     const userId = req.user.id;
 
